@@ -52,6 +52,18 @@ module MAVLink
       stx == STX_V1
     end
 
+    def pack
+      if mavlink2?
+        [
+          stx, payload_length, incompatibility_flags, compatibility_flags,
+          sequence, system_id, component_id, message_id & 0xFF,
+          (message_id >> 8) & 0xFF, (message_id >> 16) & 0xFF
+        ].pack("C*")
+      else
+        [stx, payload_length, sequence, system_id, component_id, message_id].pack("C*")
+      end
+    end
+
     private
 
     def validate_stx!(stx)
