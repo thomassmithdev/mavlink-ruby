@@ -23,4 +23,7 @@ Gem::Specification.new do |spec|
     end
   end
   spec.require_paths = ["lib"]
+
+  spec.add_development_dependency "minitest", "~> 5.25"
+  spec.add_development_dependency "rake", "~> 13.0"
 end
