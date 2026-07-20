@@ -64,6 +64,41 @@ module MAVLink
       end
     end
 
+    def self.unpack(binary)
+      raise ArgumentError, "binary must be a String, got #{binary.class}" unless binary.is_a?(String)
+      raise ArgumentError, "binary is empty" if binary.empty?
+
+      stx = binary.getbyte(0)
+      case stx
+      when STX_V2
+        raise ArgumentError, "MAVLink 2 header requires 10 bytes, got #{binary.bytesize}" unless binary.bytesize == 10
+        b = binary.unpack("C10")
+        new(
+          stx: b[0],
+          payload_length: b[1],
+          incompatibility_flags: b[2],
+          compatibility_flags: b[3],
+          sequence: b[4],
+          system_id: b[5],
+          component_id: b[6],
+          message_id: b[7] | (b[8] << 8) | (b[9] << 16)
+        )
+      when STX_V1
+        raise ArgumentError, "MAVLink 1 header requires 6 bytes, got #{binary.bytesize}" unless binary.bytesize == 6
+        b = binary.unpack("C6")
+        new(
+          stx: b[0],
+          payload_length: b[1],
+          sequence: b[2],
+          system_id: b[3],
+          component_id: b[4],
+          message_id: b[5]
+        )
+      else
+        raise ArgumentError, "stx must be STX_V1 (0xFE) or STX_V2 (0xFD), got #{stx.inspect}"
+      end
+    end
+
     private
 
     def validate_stx!(stx)
