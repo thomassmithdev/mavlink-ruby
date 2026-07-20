@@ -7,4 +7,5 @@ module MAVLink
   STX_V2 = 0xFD
 end
 
+require_relative "mavlink/crc"
 require_relative "mavlink/message"
