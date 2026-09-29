@@ -11,3 +11,4 @@ end
 require_relative "mavlink/crc"
 require_relative "mavlink/message"
 require_relative "mavlink/frame"
+require_relative "mavlink/parser"
